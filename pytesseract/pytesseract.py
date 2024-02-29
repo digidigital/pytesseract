@@ -229,8 +229,15 @@ def subprocess_args(include_stdout=True):
         'startupinfo': None,
         'env': environ,
     }
+    
+    python_major = sys.version_info['major']
+    python_minor = sys.version_info['minor']
 
+    # Check if this works...
     if hasattr(subprocess, 'STARTUPINFO'):
+        if python_major > 3 or (python_major > 3 and python_minor >= 7):   
+            kwargs['creationflags'] = subprocess.CREATE_NO_WINDOW      
+        else:
         kwargs['startupinfo'] = subprocess.STARTUPINFO()
         kwargs['startupinfo'].dwFlags |= subprocess.STARTF_USESHOWWINDOW
         kwargs['startupinfo'].wShowWindow = subprocess.SW_HIDE
